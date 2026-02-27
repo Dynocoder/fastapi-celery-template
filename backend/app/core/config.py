@@ -116,4 +116,18 @@ class Settings(BaseSettings):
         return self
 
 
+    CELERY_BROKER_URL: str | None = None
+    CELERY_RESULT_BACKEND: str | None = None
+
+    @model_validator(mode="after")
+    def _validate_celery_settings(self) -> Self:
+        broker = self.CELERY_BROKER_URL
+        backend = self.CELERY_RESULT_BACKEND
+        if (broker and not backend) or (backend and not broker):
+            raise ValueError(
+                "Both CELERY_BROKER_URL and CELERY_RESULT_BACKEND must be set together."
+            )
+        return self
+
+
 settings = Settings()  # type: ignore

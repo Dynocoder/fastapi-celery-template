@@ -129,5 +129,8 @@ class Settings(BaseSettings):
             )
         return self
 
+    FLOWER_USER: str = ""
+    FLOWER_PASSWORD: str = ""
+
 
 settings = Settings()  # type: ignore

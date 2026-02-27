@@ -212,6 +212,31 @@ services:
     build:
       context: ./backend
 
+  flower:
+    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    restart: always
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      - redis
+      - worker
+    command: celery -A app.celery_app.celery_app flower --basic-auth=${FLOWER_USER}:${FLOWER_PASSWORD}
+    env_file:
+      - .env
+    environment:
+      - DOMAIN=${DOMAIN}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - FLOWER_USER=${FLOWER_USER}
+      - FLOWER_PASSWORD=${FLOWER_PASSWORD}
+    labels:
+      - traefik.enable=true
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.flower.rule=Host(`flower.${DOMAIN}`)
+      - traefik.http.routers.flower.entrypoints=http,https
+      - traefik.http.services.flower.loadbalancer.server.port=5555
 
 volumes:
   app-db-data:

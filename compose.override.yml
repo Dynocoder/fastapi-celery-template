@@ -129,6 +129,10 @@ services:
     ports:
       - 9323:9323
 
+  flower:
+    restart: "no"
+    ports:
+      - "5555:5555"
   
   redis:
     ports:

@@ -79,7 +79,7 @@ services:
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
 
   redis:
-    image: redis:7
+    image: redis:8
     restart: always
 
   backend:
